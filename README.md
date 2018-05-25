@@ -15,10 +15,10 @@
   - [Asynchronous reducers](#asynchronous-reducers)
   - [State via context (Beta)](#state-via-context-beta)
 - [API](#api)
-  - [stateComponent](#statecomponent)
-  - [stateContext (Beta)](#statecontext-beta)
+  - [`stateComponent`](#statecomponent)
+  - [`stateContext` (Beta)](#statecontext-beta)
   - [Reducer helpers](#reducer-helpers)
-    - [toggle](#toggle)
+    - [`toggle`](#toggle)
 - [TODOs](#todos)
 - [FAQs](#faqs)
 
@@ -251,7 +251,7 @@ export default Counter.consume(render);
 
 ## API
 
-### stateComponent
+### `stateComponent`
 
 Used to create a stateful component.
 
@@ -275,7 +275,7 @@ type StateComponent = (
 ) => React.Component;
 ```
 
-### stateContext (Beta)
+### `stateContext` (Beta)
 
 Used to create a state `Provider` component and `consume` higher-order component.
 
@@ -305,7 +305,7 @@ type StateContext = (
 
 Fuck `this` provides some utility methods to make creating reducers for common data types simpler.
 
-#### toggle
+#### `toggle`
 
 A function that will create a reducer that toggles a binary state.
 
