@@ -78,15 +78,15 @@ You can also use Fuck `this` in CodePen or locally by including the script from 
 
 To cover the basics of Fuck `this`, let's create a simple counter component with `stateComponent`. You've probably made a few of these in your time, one more won't hurt (we can hope).
 
-First let's define our initial state as a plain object:
+First, define the initial state as a plain object:
 
 ```javascript
 const initialState = { counter: 0 };
 ```
 
-Each property defined in the component state will be provided to our render function as an individual prop.
+Each property defined in `initialState` will be provided to our render function as an individual prop.
 
-Next, let's define our reducers. A reducer takes the current state and some optional data, and returns a new copy of the state.
+Next, define our reducers. A reducer is a function that takes the current stat with some optional data, and returns a new copy of the state.
 
 ```javascript
 const reducers = {
@@ -97,7 +97,7 @@ const reducers = {
 };
 ```
 
-When `reducers` is passed to `stateComponent`, each reducer have a corresponding **action** created and provided to the render function as a prop.
+These `reducers`, when passed to `stateComponent`, each have a corresponding **action** generated. These actions are passed to the render function as a prop.
 
 An action is called like this:
 
@@ -107,7 +107,7 @@ increment(1);
 
 When the action is called, Fuck `this` will provide the latest version of the state and the value passed to the action to the corresponding reducer. The state returned from the reducer becomes the latest component state.
 
-Now, create a functional React component that displays the current `counter` and provides a button that fires `increment`.
+Now, create a functional React component that accepts `counter` and `increment` as props:
 
 ```javascript
 const render = ({ count, increment }) => (
@@ -118,7 +118,7 @@ const render = ({ count, increment }) => (
 );
 ```
 
-We have our initial state, our reducer functions and a component. All that's left is to bind these together with `stateComponent`:
+We have our initial state, our reducer functions and a component. All that's left is create a React component from these using `stateComponent`:
 
 ```javascript
 import { stateComponent } from 'fuck-this';
@@ -139,7 +139,7 @@ export default () => <Counter />;
 
 So far we've defined `initialState` and `reducers` as objects.
 
-Both can also be defined as a function that returns an object. This function is provided `props`, the same `props` that are provided to your component by its parent:
+Both can also be defined as a function that returns an object. This function is provided `props`, the same `props` that are provided to the component by its parent:
 
 ```javascript
 const initialState = ({ initialCount }) => ({ count: initialCount });
@@ -153,7 +153,7 @@ Now when we use the component returned from `stateComponent`, we can provide it 
 
 `count` will now be initialised as `1`.
 
-With reducers, we can use this capability to (for instance) bind an API endpoint. If we're calling an async endpoint, it means we'll need async reducers. Which, luckily...
+With reducers, we can use this capability to (for instance) bind an API endpoint. But if we're calling an async endpoint, we'll need async reducers. Which, luckily...
 
 ### Asynchronous reducers
 
@@ -223,7 +223,7 @@ import Counter from './Counter';
 
 export default () => (
   <Counter.Provider>
-    {/* Any children can subscribe to this store with Counter.Consumer */}
+    {/* Any children can subscribe to this store with Counter.consume */}
   </Counter.Provider>
 );
 ```
@@ -330,13 +330,16 @@ const reducers = { toggleOpen: toggle('isOpen') };
 Some ideas on how to push this library/pattern forward:
 
 * **Lifecycle events:** If we can expose lifecycle events in a pure way, this might be a nice extra. I personally feel like ReasonReact's `self` is too much of an encroachment of classiness into FP, but there's probably a pure solution here.
+* **State merging:** Currently, a reducer needs to return a full copy of the state. `this.setState` has the ability to define only a portion of the state, which will be shallow-merged with the existing state. A possibility?
 
 ## FAQs
 
 **Does this work with React < 16.3?**
+
 No. `stateContext` uses the new context API. It's a tough old world I know but it's just a simple matter of not having time to support legacy environments.
 
 **Browser support?**
+
 Absolutely.
 
 **Why "Fuck `this`"?**
@@ -356,4 +359,5 @@ Each `setState` call can modify the state in any way it wishes. It can be hard t
 With reducers, we keep all of our state dickery into a single place. The reducers themselves are pure, so we can test that they do exactly what they say they will. And because they're named, we know exactly what each one is supposed to do.
 
 **No, I meant the "fuck". Do you honestly expect me to use this in a professional environment?**
+
 Haha. IKR.
