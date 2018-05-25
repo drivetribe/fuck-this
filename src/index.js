@@ -1,7 +1,7 @@
 // @flow
 // @flow
 // TODO: Split this into a stand-alone library
-import React, { createContext } from "react";
+import React, { createContext } from 'react';
 
 export type State = { [key: string]: any };
 export type StateFactory = (props: Props) => State;
@@ -13,7 +13,11 @@ export type Action = (payload?: any) => State;
 export type Actions = { [key: string]: Action };
 export type RenderFunction = (props: Props) => React.ReactNode;
 
-type Resolve = (v: any) => any;
+type ResolvePromise = (v: any) => any;
+
+type Resolver<T> = T | (() => T);
+const resolve = <T>(thing: Resolver<T>, props: Props): T =>
+  typeof thing === 'function' ? thing(this.props) : thing;
 
 export const stateComponent = (
   initialState: InitialState,
@@ -21,25 +25,28 @@ export const stateComponent = (
   Render: RenderFunction
 ) =>
   class Stateful extends React.Component {
-    state: State = typeof initialState === "function"
-      ? initialState(this.props)
-      : initialState;
+    constructor(props) {
+      super(props);
 
-    actions: Actions = Object.keys(reducers).reduce(
-      (acc: Actions, key: string) => {
-        acc[key] = (payload: any) =>
-          new Promise(async (resolve: Resolve) => {
-            const newState = await reducers[key](
-              this.state,
-              payload,
-              this.actions
-            );
-            this.setState(newState, () => resolve(this.state));
-          });
-        return acc;
-      },
-      {}
-    );
+      this.state = resolve < State > (initialState, props);
+
+      const resolvedReducers = resolve < Reducers > (reducers, props);
+      this.actions = Object.keys(resolvedReducers).reduce(
+        (acc: Actions, key: string) => {
+          acc[key] = (payload: any) =>
+            new Promise(async (resolve: ResolvePromise) => {
+              const newState = await resolvedReducers[key](
+                this.state,
+                payload,
+                this.actions
+              );
+              this.setState(newState, () => resolve(this.state));
+            });
+          return acc;
+        },
+        {}
+      );
+    }
 
     render() {
       return <Render {...this.props} {...this.state} {...this.actions} />;
@@ -60,7 +67,9 @@ export const stateContext = (
         <Provider value={props}>{children}</Provider>
       )
     ),
-    Consumer
+    consume: Component => props => (
+      <Consumer>{state => <Component {...props} {...state} />}</Consumer>
+    )
   };
 };
 
