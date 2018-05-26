@@ -1,6 +1,6 @@
 # <img alt="Fuck This" src="https://user-images.githubusercontent.com/7850794/40551187-28f8ea2a-6034-11e8-8e83-dd3a97fa7183.png" width="400">
 
-**A stateful, functional React component microlibrary.**
+**UNRELEASED. A stateful, functional React component microlibrary.**
 
 [![npm](https://img.shields.io/npm/v/fuck-this.svg?style=flat-square)](https://www.npmjs.com/package/fuck-this) [![npm](https://img.shields.io/npm/dm/fuck-this.svg?style=flat-square)](https://www.npmjs.com/package/fuck-this)
 
@@ -16,6 +16,7 @@
     - [Render function](#render-function)
   - [Initialising state and reducers via `props`](#initialising-state-and-reducers-via-props)
   - [Asynchronous reducers](#asynchronous-reducers)
+  - [Indicate updating](#indicate-updating)
   - [State via context (Beta)](#state-via-context-beta)
 - [API](#api)
   - [`stateComponent`](#statecomponent)
@@ -205,6 +206,57 @@ We'd call this component like so, ensuring we provide a `fetchCounter` function:
 <Counter fetchCounter={fetchCounter} />
 ```
 
+### Indicate updating
+
+This async example calls the endpoint but doesn't yet communicate via state that loading is in progress.
+
+Each action returns a `Promise`, so we can compose actions like this:
+
+```javascript
+indicateUpdating().then(fetchCounter);
+```
+
+Add `isUpdating` to the state:
+
+```javascript
+const initialState = {
+  count: 0,
+  isUpdating: false
+};
+```
+
+Add a reducer to set it to `true`, and return `isUpdating: false` from the `updateCount` reducer:
+
+```javascript
+const reducers = ({ fetchCount }) => ({
+  indicateUpdating: state => ({ ...state, isUpdating: true }),
+  updateCount: async state => {
+    const count = await fetchCount();
+    return {
+      ...state,
+      count,
+      isUpdating: false
+    };
+  }
+});
+```
+
+Now we amend the `render` function to 1) disable the update button if `isUpdating` is `true`, and 2) to fire `indicateUpdating` before `updateCount`:
+
+```javascript
+const render = ({ count, updateCount, indicateUpdating, isUpdating }) => (
+  <>
+    <span>{count}</span>
+    <button
+      disabled={isUpdating}
+      onClick={() => indicateUpdating().then(updateCount)}
+    >
+      Update
+    </button>
+  </>
+);
+```
+
 ### State via context (Beta)
 
 `stateComponent` is great for creating components with local state, but sometimes we need a way to pass this state throughout our application.
@@ -345,6 +397,7 @@ Some ideas on how to push this library/pattern forward:
 
 * **Lifecycle events:** If we can expose lifecycle events in a pure way, this might be a nice extra. I personally feel like ReasonReact's `self` is too much of an encroachment of classiness into FP, but there's probably a pure solution here.
 * **State merging:** Currently, a reducer needs to return a full copy of the state. `this.setState` has the ability to define only a portion of the state, which will be shallow-merged with the existing state. A possibility?
+* **Action composition:** Currently, to call reducers in sequence we need to chain them via `await` calls or promises. There's probably a better way to compose these. I played with providing actions as a third argument to reducers, but I feel like it takes away from their purity.
 
 ## FAQs
 
