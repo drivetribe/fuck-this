@@ -1,0 +1,13 @@
+{
+  "presets": ["flow", "react", ["env", { "modules": false }]],
+  "plugins": [
+    "transform-es2015-destructuring",
+    ["transform-object-rest-spread", { "useBuiltIns": true }],
+    "external-helpers"
+  ],
+  "env": {
+    "test": {
+      "presets": ["flow", "react", "env"]
+    }
+  }
+}

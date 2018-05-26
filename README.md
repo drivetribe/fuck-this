@@ -11,6 +11,9 @@
 - [Get started](#get-started)
   - [Installation](#installation)
   - [Counter example](#counter-example)
+    - [State](#state)
+    - [Reducers & actions](#reducers-actions)
+    - [Render function](#render-function)
   - [Initialising state and reducers via `props`](#initialising-state-and-reducers-via-props)
   - [Asynchronous reducers](#asynchronous-reducers)
   - [State via context (Beta)](#state-via-context-beta)
@@ -76,38 +79,52 @@ You can also use Fuck `this` in CodePen or locally by including the script from 
 
 ### Counter example
 
-To cover the basics of Fuck `this`, let's create a simple counter component with `stateComponent`. You've probably made a few of these in your time, one more won't hurt (we can hope).
+To cover the basics of Fuck `this`, let's create a simple counter component with `stateComponent`. You've probably made a few of these in your time, one more won't hurt (we hope).
 
-First, define the initial state as a plain object:
+#### State
 
-```javascript
-const initialState = { counter: 0 };
-```
-
-Each property defined in `initialState` will be provided to our render function as an individual prop.
-
-Next, define our reducers. A reducer is a function that takes the current stat with some optional data, and returns a new copy of the state.
+State is defined as a plain object:
 
 ```javascript
-const reducers = {
-  increment: (state, amount) => ({
-    ...state,
-    counter: state.counter + amount
-  })
-};
+const initialState = { count: 0 };
 ```
 
-These `reducers`, when passed to `stateComponent`, each have a corresponding **action** generated. These actions are passed to the render function as a prop.
-
-An action is called like this:
+Each property defined in the state will be provided to our render function as a prop, e.g:
 
 ```javascript
-increment(1);
+({ count }) => <span>{count}</span>;
 ```
 
-When the action is called, Fuck `this` will provide the latest version of the state and the value passed to the action to the corresponding reducer. The state returned from the reducer becomes the latest component state.
+#### Reducers & actions
 
-Now, create a functional React component that accepts `counter` and `increment` as props:
+A reducer is a function that accepts the current state and, optionally, a data payload. It returns _a new copy_ of the state.
+
+```javascript
+const increment = (state, payload) => ({
+  ...state,
+  count: state.count + payload
+});
+```
+
+In Fuck `this`, reducers are defined as a named map of functions:
+
+```javascript
+const reducers = { increment };
+```
+
+Each named reducer will have a corresponding **action** generated and these will be passed to the render function as a prop.
+
+Actions are called with just the `payload` argument. Fuck `this` will fire the corresponding reducer with the latest `state` and the provided `payload`.
+
+```javascript
+({ increment }) => <button onClick={() => increment(1)}>+</button>;
+```
+
+#### Render function
+
+The final piece of a stateful component is the functional render component.
+
+Create a component that accepts both `counter` and `increment` as props:
 
 ```javascript
 const render = ({ count, increment }) => (
@@ -118,7 +135,7 @@ const render = ({ count, increment }) => (
 );
 ```
 
-We have our initial state, our reducer functions and a component. All that's left is create a React component from these using `stateComponent`:
+Now we have our initial state, our reducers and a render function. Use them to create a stateful React component using the `stateComponent` function:
 
 ```javascript
 import { stateComponent } from 'fuck-this';
@@ -128,7 +145,7 @@ import { stateComponent } from 'fuck-this';
 export default stateComponent(initialState, reducers, render);
 ```
 
-This component can be now be render as any other:
+This component can be now be rendered as any other:
 
 ```javascript
 import Counter from './Counter';
@@ -139,16 +156,13 @@ export default () => <Counter />;
 
 So far we've defined `initialState` and `reducers` as objects.
 
-Both can also be defined as a function that returns an object. This function is provided `props`, the same `props` that are provided to the component by its parent:
+Both can also be defined as a function that returns an object. This function is provided the `props` that are provided to the component by its parent when it's mounted:
 
 ```javascript
 const initialState = ({ initialCount }) => ({ count: initialCount });
-```
 
-Now when we use the component returned from `stateComponent`, we can provide it `initialCount`:
-
-```javascript
-<Counter initialCount={1} />
+// Later...
+() => <Counter initialCount={1} />;
 ```
 
 `count` will now be initialised as `1`.
@@ -157,18 +171,18 @@ With reducers, we can use this capability to (for instance) bind an API endpoint
 
 ### Asynchronous reducers
 
-Our reducers can be asynchronous. They still return a new state, but do so after resolving data, or some other async operation.
+Reducers can be asynchronous. They must still return a new state, but can do so after resolving data, or some other async operation.
 
-Here's a `reducers` factory function that takes a `fetchCount` endpoint via `props`, and returns an async `updateCount` reducer:
+Here's a `reducers` factory function that takes a super-useful `fetchCount` endpoint via component `props`, and returns an async `updateCount` reducer:
 
 ```javascript
 const initialState = { count: 0 };
 
 const reducers = ({ fetchCount }) => ({
-  updateCount: async (state) => {
+  updateCount: async state => {
     const count = await fetchCount();
     return { ...state, count };
-  };
+  }
 });
 ```
 
@@ -195,19 +209,19 @@ We'd call this component like so, ensuring we provide a `fetchCounter` function:
 
 `stateComponent` is great for creating components with local state, but sometimes we need a way to pass this state throughout our application.
 
-The `stateContext` function does exactly this. It takes `initialState` and `reducers` arguments, and returns a `Provider` component and a `consumer` function.
+The `stateContext` function does exactly this. It takes the same `initialState` and `reducers` arguments as `stateComponent`, and returns a `Provider` component to provide the state and actions to children, and a `consumer` function to provide these as props to a `render` function.
 
 Create a `stateContext` with the same `initialState` and `reducers` that we used earlier:
 
 ```javascript
 import { stateContext } from 'fuck-this';
 
-const initialState = { counter: 0 };
+const initialState = { count: 0 };
 
 const reducers = {
   increment: (state, amount) => ({
     ...state,
-    counter: state.counter + amount
+    count: state.count + amount
   })
 };
 
@@ -223,26 +237,26 @@ import Counter from './Counter';
 
 export default () => (
   <Counter.Provider>
-    {/* Any children can subscribe to this store with Counter.consume */}
+    {/* Any children can subscribe to this store via Counter.consume */}
   </Counter.Provider>
 );
 ```
 
-This component can optionally accept `props` which can be used to initiate `initialState` and/or `reducers` as before.
+This component can optionally accept props which can be used to initiate `initialState` and/or `reducers` as before.
 
 ```javascript
 <Counter.Provider initialCount={1}>
 ```
 
-We can subscribe any component to this state with the `consume` function:
+To subscribe a functional component to this state, provide it to the generated `consume` function:
 
 ```javascript
 import Counter from './Counter';
 
-const render = ({ counter, increment }) => (
+const render = ({ count, increment }) => (
   <>
     <span>{count}</span>
-    <button onClick={() => increment(1)}>Update</button>
+    <button onClick={() => increment(1)}>+</button>
   </>
 );
 

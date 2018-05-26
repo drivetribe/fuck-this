@@ -1,10 +1,16 @@
 {
   "name": "fuck-this",
   "version": "0.0.1",
-  "description": "A stateful, functional React component microlibrary",
+  "description": "A stateful, functional React component library",
   "main": "lib/index.js",
+  "module": "dist/fuck-this.es.js",
+  "jsnext:main": "dist/fuck-this.es.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c && npm run measure",
+    "watch": "rollup -c -w",
+    "flow": "flow",
+    "measure": "gzip -c $npm_package_unpkg | wc -c",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,13 +24,32 @@
   },
   "homepage": "https://github.com/drivetribe/fuck-this#readme",
   "devDependencies": {
-    "rollup": "^0.59.3"
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.0.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "jest": "^23.0.0",
+    "regenerator-runtime": "^0.11.1",
+    "rollup": "^0.59.3",
+    "rollup-plugin-babel": "^3.0.4",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-uglify": "^3.0.0"
   },
-  "dependencies": {
+  "peerDependencies": {
     "react": "^16.4.0"
+  },
+  "jest": {
+    "verbose": true,
+    "moduleDirectories": ["node_modules"]
   },
   "prettier": {
     "singleQuote": true
   },
-  "unpkg": "./dist/retrostate.js"
+  "unpkg": "./dist/fuck-this.js"
 }
