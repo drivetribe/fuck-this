@@ -2,11 +2,17 @@
   "presets": ["flow", "react", ["env", { "modules": false }]],
   "plugins": [
     "transform-es2015-destructuring",
-    ["transform-object-rest-spread", { "useBuiltIns": true }]
+    ["transform-object-rest-spread", { "useBuiltIns": true }],
+    "transform-class-properties"
   ],
   "env": {
     "test": {
-      "presets": ["env"]
+      "presets": ["env"],
+      "plugins": [
+        "transform-es2015-destructuring",
+        ["transform-object-rest-spread", { "useBuiltIns": true }],
+        "transform-class-properties"
+      ]
     },
     "production": {
       "plugins": ["external-helpers"]

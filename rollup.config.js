@@ -5,12 +5,13 @@ import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
 
 const config = {
-  input: 'src/index.js'
+  input: 'src/index.js',
+  external: ['react']
 };
 
 const umd = Object.assign({}, config, {
   output: {
-    file: 'dist/fuck-this.js',
+    file: 'dist/fuck-this.umd.js',
     format: 'umd',
     name: 'fuckThis',
     exports: 'named',
@@ -45,7 +46,7 @@ const es = Object.assign({}, config, {
     format: 'es',
     exports: 'named'
   },
-  plugins: [babel({ exclude: 'node_modules/**' })]
+  plugins: [babel({ exclude: 'node_modules/**' }), resolve()]
 });
 
 const cjs = Object.assign({}, config, {
@@ -54,7 +55,7 @@ const cjs = Object.assign({}, config, {
     format: 'cjs',
     exports: 'named'
   },
-  plugins: [babel({ exclude: 'node_modules/**' })]
+  plugins: [babel({ exclude: 'node_modules/**' }), resolve()]
 });
 
 export default [umd, umdProd, es, cjs];
