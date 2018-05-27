@@ -60,10 +60,11 @@ export default stateComponent(initialState, reducers, render);
 
 ## Features
 
-* **Redux-style reducers:** Use of Redux-style reducers means all logic resides in one pure, testable location.
+* **Redux-style reducers:** Use of Redux-style pure reducer functions means all state logic neatly resides in one testable location.
 * **Reducers => actions:** Reducers are automatically converted into action functions and passed in as props. Named reducers means no more action strings littering your codebase.
 * **Async reducers:** Reducers can be asynchronous to resolve data from external sources.
-* **Portable render:** As state and actions are passed as props, the render function remains portable.
+* **Portable render:** As state and actions are passed as props, the render function remains portable and independent from the library.
+* **Context:** Share state and actions throughout an app using `stateContext`.
 * **Tiny:** Less than 1kb.
 
 ## Get started
