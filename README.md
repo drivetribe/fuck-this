@@ -420,7 +420,7 @@ This isn't to say that `this` doesn't have its virtues, just that my gut feel is
 
 As for `setState`, it's messy and unpredictable.
 
-It's fine(ish) for simple tasks but larger components can quickly grow littered with and it's hard to know what each one does. It's only up to convention that they're wrapped in a function that says what it does.
+It's fine(ish) for simple tasks but larger components can quickly grow littered with them and it can be hard to know what each one does. It's only up to convention that they're wrapped in a function that clearly says what it does.
 
 Each `setState` call can modify the state in any way it wishes. It can be hard to track down the source of changes.
 
