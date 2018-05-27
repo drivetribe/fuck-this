@@ -40,6 +40,8 @@ test('State from props', () => {
   ).toBe(false);
 });
 
+test('State context', () => {});
+
 test('Reducers from props', () => {
   const state = { count: 0 };
   const reducers = ({ amount }) => ({
@@ -54,6 +56,30 @@ test('Reducers from props', () => {
     .prop('increment')()
     .then(({ count }) => expect(count).toBe(1));
 });
+
+// TODO: Enzyme doesn't seem to support the new React context API
+// test('State context', () => {
+//   const state = { foo: true };
+//   const reducers = {
+//     toggle: state => ({ foo: !state.foo })
+//   };
+
+//   const TestContext = stateContext(state, reducers);
+//   const Consumer = TestContext.consume(Test);
+
+//   const wrapper = mount(
+//     <TestContext.Provider>
+//       <Consumer />
+//     </TestContext.Provider>
+//   );
+
+//   const testWrapper = wrapper.find(Test);
+//   expect(testWrapper.prop('foo')).toBe(true);
+
+//   return testWrapper
+//     .prop('toggle')()
+//     .then(({ foo }) => expect(foo).toBe(false));
+// });
 
 test('toggle', () => {
   const state = { foo: true };

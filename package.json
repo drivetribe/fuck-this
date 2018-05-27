@@ -1,6 +1,6 @@
 {
   "name": "fuck-this",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A stateful, functional React component library",
   "main": "lib/index.js",
   "module": "dist/fuck-this.es.js",
@@ -10,6 +10,7 @@
     "watch": "rollup -c -w",
     "flow": "flow",
     "measure": "gzip -c $npm_package_unpkg | wc -c",
+    "prepublishOnly": "npm test && npm run build",
     "test": "jest"
   },
   "repository": {
