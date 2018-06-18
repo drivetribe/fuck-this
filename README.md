@@ -12,7 +12,7 @@
   - [Installation](#installation)
   - [Counter example](#counter-example)
     - [State](#state)
-    - [Reducers & actions](#reducers-actions)
+    - [Reducers & actions](#reducers--actions)
     - [Render function](#render-function)
   - [Initialising state and reducers via `props`](#initialising-state-and-reducers-via-props)
   - [Asynchronous reducers](#asynchronous-reducers)
@@ -60,12 +60,12 @@ export default stateComponent(initialState, reducers, render);
 
 ## Features
 
-* **Redux-style reducers:** Use of Redux-style pure reducer functions means all state logic neatly resides in one testable location.
-* **Reducers => actions:** Reducers are automatically converted into action functions and passed in as props. Named reducers means no more action strings littering your codebase.
-* **Async reducers:** Reducers can be asynchronous to resolve data from external sources.
-* **Portable render:** As state and actions are passed as props, the render function remains portable and independent from the library.
-* **Context:** Share state and actions throughout an app using `stateContext`.
-* **Tiny:** Less than 1kb.
+- **Redux-style reducers:** Use of Redux-style pure reducer functions means all state logic neatly resides in one testable location.
+- **Reducers => actions:** Reducers are automatically converted into action functions and passed in as props. Named reducers means no more action strings littering your codebase.
+- **Async reducers:** Reducers can be asynchronous to resolve data from external sources.
+- **Portable render:** As state and actions are passed as props, the render function remains portable and independent from the library.
+- **Context:** Share state and actions throughout an app using `stateContext`.
+- **Tiny:** Less than 1kb.
 
 ## Get started
 
@@ -338,7 +338,7 @@ type Reducers = {
 type StateComponent = (
   initialState: State | (props: Props) => State,
   reducers: Reducers | (props: Props) => Reducers,
-  render: (props: Props) => React.Node
+  render: React.PureComponent | (props: Props) => React.Node
 ) => React.Component;
 ```
 
@@ -396,9 +396,9 @@ const reducers = { toggleOpen: toggle('isOpen') };
 
 Some ideas on how to push this library/pattern forward:
 
-* **Lifecycle events:** If we can expose lifecycle events in a pure way, this might be a nice extra. I personally feel like ReasonReact's `self` is too much of an encroachment of classiness into FP, but there's probably a pure solution here.
-* **State merging:** Currently, a reducer needs to return a full copy of the state. `this.setState` has the ability to define only a portion of the state, which will be shallow-merged with the existing state. A possibility?
-* **Action composition:** Currently, to call reducers in sequence we need to chain them via `await` calls or promises. There's probably a better way to compose these. I played with providing actions as a third argument to reducers, but I feel like it takes away from their purity.
+- **Lifecycle events:** If we can expose lifecycle events in a pure way, this might be a nice extra. I personally feel like ReasonReact's `self` is too much of an encroachment of classiness into FP, but there's probably a pure solution here. It is currently possible to provide a `PureComponent` as the `Component` argument, so no rush.
+- **State merging:** Currently, a reducer needs to return a full copy of the state. `this.setState` has the ability to define only a portion of the state, which will be shallow-merged with the existing state. A possibility?
+- **Action composition:** Currently, to call reducers in sequence we need to chain them via `await` calls or promises. There's probably a better way to compose these. I played with providing actions as a third argument to reducers, but I feel like it takes away from their purity.
 
 ## FAQs
 
