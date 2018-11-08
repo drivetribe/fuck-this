@@ -6,6 +6,9 @@
 
 <!-- TOC -->
 
+## Deprecated
+React [hooks](https://reactjs.org/docs/hooks-intro.html) solves the issues this library set out to solve. It will not be maintained going forward.
+
 - [About](#about)
 - [Features](#features)
 - [Get started](#get-started)
