@@ -1,3 +1,6 @@
+# DEPRECATED
+**React [hooks](https://reactjs.org/docs/hooks-intro.html) solves the issues this library set out to solve. It will not be maintained going forward.**
+
 # <img alt="Fuck This" src="https://user-images.githubusercontent.com/7850794/40551187-28f8ea2a-6034-11e8-8e83-dd3a97fa7183.png" width="400">
 
 **A stateful, functional React component microlibrary.**
@@ -5,9 +8,6 @@
 [![npm](https://img.shields.io/npm/v/fuck-this.svg?style=flat-square)](https://www.npmjs.com/package/fuck-this) [![npm](https://img.shields.io/npm/dm/fuck-this.svg?style=flat-square)](https://www.npmjs.com/package/fuck-this)
 
 <!-- TOC -->
-
-## Deprecated
-React [hooks](https://reactjs.org/docs/hooks-intro.html) solves the issues this library set out to solve. It will not be maintained going forward.
 
 - [About](#about)
 - [Features](#features)
